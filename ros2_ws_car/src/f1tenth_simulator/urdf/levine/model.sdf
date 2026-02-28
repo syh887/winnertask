@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="levine">
+    <static>true</static>
+    <!-- 视觉层（薄） -->
+    <link name="visual_layer">
+      <pose>0 0 0.01 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>8 12 0.001</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file:///home/song/ros2_ws_car/src/f1tenth_simulator/urdf/levine/</uri>
+            <name>MyTrack/RoadTexture</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  
+    <!-- 碰撞层（厚） -->
+    <link name="collision_layer">
+      <pose>0 0 -0.1 0 0 0</pose>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>8 12 0.2</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

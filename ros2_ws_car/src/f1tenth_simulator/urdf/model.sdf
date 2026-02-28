@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="racecar">
+    <!-- 初始高度 -->
+    <pose>0 0 0.3 0 0 0</pose>
+
+    <!-- 主底盘 -->
+    <link name="base_link">
+      <collision name="base_collision">
+        <geometry>
+          <box>
+            <size>0.43 0.36 0.18</size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1.0</mu>
+              <mu2>1.0</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+
+      <visual name="base_visual">
+        <geometry>
+          <box>
+            <size>0.43 0.36 0.18</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Blue</name>
+          </script>
+        </material>
+      </visual>
+
+      <inertial>
+        <mass>25.0</mass>
+        <inertia>
+          <ixx>0.99</ixx>
+          <iyy>3.06</iyy>
+          <izz>4.14</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <!-- 左驱动轮 -->
+    <link name="left_wheel">
+      <pose relative_to="base_link">-0.036 0.18 0 1.57 0 0</pose>
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <radius>0.09</radius>
+            <length>0.072</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <cylinder>
+            <radius>0.09</radius>
+            <length>0.072</length>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+
+    <!-- 右驱动轮 -->
+    <link name="right_wheel">
+      <pose relative_to="base_link">-0.036 -0.18 0 1.57 0 0</pose>
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <radius>0.09</radius>
+            <length>0.072</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <cylinder>
+            <radius>0.09</radius>
+            <length>0.072</length>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+
+    <!-- 前支撑轮 -->
+    <link name="caster_wheel">
+      <pose relative_to="base_link">0.19 0 0.072 0 0 0</pose>
+      <collision name="collision">
+        <geometry>
+          <sphere>
+            <radius>0.072</radius>
+          </sphere>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <sphere>
+            <radius>0.072</radius>
+          </sphere>
+        </geometry>
+      </visual>
+    </link>
+
+    <!-- 摄像头支柱 - 新增 -->
+    <link name="camera_pole">
+      <pose relative_to="base_link">0.15 0 0.3 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <cylinder>
+            <radius>0.008</radius>
+            <length>0.55</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.5 0.5 0.5 1</ambient>
+          <diffuse>0.5 0.5 0.5 1</diffuse>
+        </material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <radius>0.008</radius>
+            <length>0.55</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- 摄像头 -->
+    <link name="camera_link">
+      <pose relative_to="base_link">0.15 0 0.6 0 1.0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.072 0.108 0.06</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+        </material>
+      </visual>
+      <sensor type="camera" name="camera_sensor">
+        <pose>0 0 0 0 0 0</pose>
+        <update_rate>30.0</update_rate>
+        <camera name="main">
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>100</far>
+          </clip>
+        </camera>
+        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+          <ros>
+            <namespace>/</namespace>
+            <remapping>image_raw:=camera_sensor/image_raw</remapping>
+            <remapping>camera_info:=camera_sensor/camera_info</remapping>
+          </ros>
+        </plugin>
+      </sensor>
+    </link>
+
+    <!-- 关节定义 -->
+    <joint name="left_wheel_joint" type="revolute">
+      <child>left_wheel</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 -1</xyz>
+        <limit>
+          <lower>-1e16</lower>
+          <upper>1e16</upper>
+        </limit>
+      </axis>
+    </joint>
+
+    <joint name="right_wheel_joint" type="revolute">
+      <child>right_wheel</child>
+      <parent>base_link</parent>
+      <axis>
+        <xyz>0 0 -1</xyz>
+        <limit>
+          <lower>-1e16</lower>
+          <upper>1e16</upper>
+        </limit>
+      </axis>
+    </joint>
+
+    <joint name="caster_joint" type="fixed">
+      <child>caster_wheel</child>
+      <parent>base_link</parent>
+    </joint>
+
+    <!-- 新增：摄像头支柱关节 -->
+    <joint name="camera_pole_joint" type="fixed">
+      <child>camera_pole</child>
+      <parent>base_link</parent>
+    </joint>
+
+    <!-- 修改：摄像头现在连接到支柱，而不是直接连到底盘 -->
+    <joint name="camera_to_pole_joint" type="fixed">
+      <child>camera_link</child>
+      <parent>camera_pole</parent>
+    </joint>
+
+    <!-- 差速驱动控制器 -->
+    <plugin name="diff_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <ros>
+        <namespace>/</namespace>
+      </ros>
+      
+      <!-- 指定驱动轮关节 -->
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      
+      <!-- 车辆参数 -->
+      <wheel_separation>0.36</wheel_separation>
+      <wheel_diameter>0.18</wheel_diameter>
+      <robot_base_frame>base_link</robot_base_frame>
+      
+      <!-- 控制话题 -->
+      <command_topic>cmd_vel</command_topic>
+      
+      <!-- 里程计（可选） -->
+      <publish_odom>false</publish_odom>
+      <publish_odom_tf>false</publish_odom_tf>
+      
+      <!-- 增加扭矩确保能动 -->
+      <max_wheel_torque>50</max_wheel_torque>
+      <max_wheel_acceleration>20</max_wheel_acceleration>
+    </plugin>
+  </model>
+</sdf>

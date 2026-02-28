@@ -1,0 +1,17 @@
+material MyTrack/RoadTexture
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture /home/song/ros2_ws_car/src/f1tenth_simulator/urdf/levine/track.png
+        filtering trilinear
+        max_anisotropy 8
+        tex_coord_set 0
+        scale 1.0 1.0
+      }
+    }
+  }
+}
