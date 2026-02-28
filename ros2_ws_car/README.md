@@ -55,25 +55,6 @@ ros2_ws_car/
 └── README.md                   # 项目说明
 
 
-```markdown
-## 项目结构
-
-- **`src/`** - 源代码目录
-  - **`image_processing/`** - 图像处理节点（Python）
-    - `image_processor.py` - 白色赛道检测与偏差计算
-    - `package.xml` - 包信息
-    - `setup.py` - Python包配置
-  - **`pid_controller/`** - PID控制节点（Python）
-    - `pid_controller.py` - 基于偏差的转向控制
-    - `package.xml` - 包信息
-    - `setup.py` - Python包配置
-  - **`f1tenth_simulator/`** - 仿真模型
-    - **`urdf/`** - 模型文件
-      - **`levine/`** - 自定义贴图赛道
-        - `model.sdf` - 赛道SDF模型
-        - `model.config` - 赛道配置文件
-      - `racecar.sdf` - 改进版车模型（摄像头位置调整）
-- **`README.md`** - 项目说明
 
 
 ## 启动流程
@@ -123,5 +104,6 @@ source install/setup.bash
 
 ros2 run pid_controller pid_controller
 ```
+
 
 
